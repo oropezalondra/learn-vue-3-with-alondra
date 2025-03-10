@@ -1,50 +1,64 @@
 <template>
-  <BlogPost 
-  v-for="post in posts" 
-  :key="post.id"
-  :id="post.id"
-  v-model:blogPostTitle="post.blogPostTitle" 
-  v-model:blogPostContent="post.blogPostContent"
-  @delete-blog-post="processDeletion"
-  ></BlogPost>
+  <StudentList :list="list">
+    <template #default="{stu}">
+      <span :class="{cursed: stu.name == 'Harry'}">
+      {{ stu.name }}
+      </span>
+    </template>
+  </StudentList>
+
+  <hr />
+
+  <el-table :data="todoList" stripe border style="width: 100%">
+    <el-table-column prop="userId" label="User ID" width="180" />
+    <el-table-column prop="id" label="ID" width="180" />
+    <el-table-column prop="title" label="Title" />
+    <el-table-column prop="completed" label="Status">
+     <template #default="slotProps">
+      <el-tag type="success" v-if="slotProps.row.completed">Completed</el-tag>
+      <el-tag type="danger" v-else>Incomplete</el-tag>
+     </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script setup>
-import {ref} from 'vue'
-import BlogPost from './BlogPost.vue';
 
-let posts = ref([
+import StudentList from './StudentList.vue';
+import {onMounted, ref} from 'vue'
+
+const list = ref([
   {
     id: 1,
-    blogPostTitle: 'What is a muggle in HP world?',
-    blogPostContent:
-      'A muggle is a person who lacks any sort of magical ability...'
+    name: 'Harry'
   },
   {
     id: 2,
-    blogPostTitle:
-      'HP and the Cursed Child Broadway production suspended until April',
-    blogPostContent:
-      'Adding to the earlier post, the Broadway production of Harry Potter and the Cursed Child has been...'
+    name: 'Hermione'
   },
   {
     id: 3,
-    blogPostTitle: 'Potter DIY: Make Your Own “Harry Potter Puppet Pal”',
-    blogPostContent:
-      'We all remember those iconic YouTube videos of Harry and the gang and probably couldn’t get “The Mysterious...'
-  },
-  {
-    id: 4,
-    blogPostTitle: 'Fan Project Brings Life to “Harry Potter” in Translation',
-    blogPostContent:
-      'It’s no secret that the Harry Potter series is a global phenomenon, having been translated into over 80 languages to date....'
+    name: 'Ron'
   }
 ])
 
-function processDeletion(id) {
-  let index = posts.value.findIndex(item => item.id == id)
-  posts.value.splice(index, 1)
+const todoList = ref([])
+
+async function getTodoList() {
+  const response = await fetch('https://jsonplaceholder.typicode.com/todos')
+  const data = await response.json()
+  console.log(data)
+  todoList.value = data
 }
+
+onMounted(() => {
+  getTodoList()
+})
 </script>
 
-<style scoped></style>
+<style scoped>
+.cursed {
+  color: red;
+}
+
+</style>
