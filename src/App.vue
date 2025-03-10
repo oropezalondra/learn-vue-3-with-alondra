@@ -1,68 +1,18 @@
 <template>
-  <div style="background-color: orange; padding: 5px;">
-    <h2>{{ blogPostId }} - {{ blogPostTitle }}</h2>
-    <h4> {{ blogPostContent }}</h4>
-    <button @click="blogPostTitle = 'A different title'">
-      Change blog post title
-    </button>
-    <BlogPost 
-      :id="blogPostId" 
-      :blog-post-title="blogPostTitle" 
-      :blog-post-content="blogPostContent"
-    ></BlogPost>
-    <BlogPost 
-      :id="blogPostId" 
-      :blog-post-title="blogPostTitle" 
-      :blog-post-content="blogPostContent"
-    ></BlogPost>
-
-  </div>
-  <BlogPost id="1" 
-  blogPostTitle="what is a muggle" 
-  blogPostContent="A muggle is a person who lacks any sort of magical ability..."
-  ></BlogPost>
-
-  <BlogPost id="1" 
-  blog-post-title="what is a muggle" 
-  blog-post-content="A muggle is a person who lacks any sort of magical ability..."
-  ></BlogPost>
-
-  <hr />
-
   <BlogPost 
-  :id="blogPostId" 
-  :blog-post-title="blogPostTitle" 
-  :blog-post-content="blogPostContent"
-  ></BlogPost>
-
-  <hr />
-
-  <BlogPost v-for="post in posts" 
+  v-for="post in posts" 
   :key="post.id"
-  :id="post.id" 
-  :blog-post-title="post.blogPostTitle" 
-  :blog-post-content="post.blogPostContent"
+  v-bind="post" 
+  @delete-blog-post="processDeletion"
   ></BlogPost>
-
-  <hr />
-
-  <BlogPost v-for="post in posts" 
-  :key="post.id"
-  v-bind="post"
-  ></BlogPost>
-
 </template>
 
 <script setup>
 import {ref} from 'vue'
 import BlogPost from './BlogPost.vue';
 
-let blogPostId = ref(2)
-let blogPostTitle = ref('HP and the Cursed Child production suspended')
-let blogPostContent = ref('Adding to that, its suspended forever')
-
 let posts = ref([
-{
+  {
     id: 1,
     blogPostTitle: 'What is a muggle in HP world?',
     blogPostContent:
@@ -89,6 +39,10 @@ let posts = ref([
   }
 ])
 
+function processDeletion(id) {
+  let index = posts.value.findIndex(item => item.id == id)
+  posts.value.splice(index, 1)
+}
 </script>
 
 <style scoped></style>

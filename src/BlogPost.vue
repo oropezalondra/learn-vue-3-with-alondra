@@ -6,9 +6,8 @@
 
         <h2>{{ id }} - {{ blogPostTitle }}</h2>
         <h4>{{ blogPostContent }}</h4>
-        <button @click="changeBlogPostTitle">
-            Change blog post title
-        </button>
+        <button @click="$emit('delete-blog-post', id)">Delete Post</button>
+        <button @click="emitDeletePostEvent(id)">Delete Post</button>
     </div>
 </template>
 
@@ -17,19 +16,13 @@ import {ref} from 'vue'
 
 let message = ref('This is is the BlogPost component.')
 
-let props = defineProps(['id','blogPostTitle','blogPostContent'])
+defineProps(['id','blogPostTitle','blogPostContent'])
 
-function changeBlogPostTitle() {
-    blogPostTitle = 'a different title'
+ const emit = defineEmits(['delete-blog-post'])
+
+function emitDeletePostEvent(id) {
+    emit('delete-blog-post', id)
 }
-
-console.log(props.blogPostTitles)
-
-// defineProps({
-//     id: Number,
-//     blogPostTitle: String,
-//     blogPostContent: String
-// })
 
 </script>
 
